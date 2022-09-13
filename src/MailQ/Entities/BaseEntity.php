@@ -2,7 +2,6 @@
 
 namespace MailQ\Entities;
 
-use Nette\Reflection\ClassType;
 use Nette\SmartObject;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
@@ -35,7 +34,7 @@ class BaseEntity {
                 if ($value instanceof \stdClass) {
                     $value = (array) $value;
                 }
-                $reflection = new ClassType($this);
+                $reflection = new \ReflectionClass($this);
                 if ($this->attributeNames->offsetExists($key)) {
                     $propertyName = $this->attributeNames->offsetGet($key);
                     if ($reflection->hasProperty($propertyName)) {
@@ -70,7 +69,7 @@ class BaseEntity {
      */
     private function initMapping($mapping) {
         $this->attributeNames = new ArrayHash();
-        $reflection = new ClassType($this);
+        $reflection = new \ReflectionClass($this);
         $properties = $reflection->getProperties();
         foreach ($properties as $property) {
             if ($property->hasAnnotation($mapping)) {
@@ -87,7 +86,7 @@ class BaseEntity {
     public function toArray($inverse = false) {
         $data = array();
         $mapping = $inverse ? 'in' : 'out';
-        $reflection = new ClassType($this);
+        $reflection = new \ReflectionClass($this);
         $properties = $reflection->getProperties();
         foreach ($properties as $key => $property) {
             if ($property->hasAnnotation($mapping)) {
